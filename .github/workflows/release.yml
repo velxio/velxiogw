@@ -33,7 +33,7 @@ jobs:
             label: Linux_ARM64
             # Free arm64 hosted runners are public-repo only; on the private
             # repo this job may sit queued/fail — the release must not.
-            best-effort: true
+            best_effort: true
           - os: macos-15-intel
             label: macOS_64bit
           - os: macos-14
@@ -41,7 +41,7 @@ jobs:
           - os: windows-2022
             label: Windows_64bit
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.best-effort || false }}
+    continue-on-error: ${{ matrix.best_effort || false }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
