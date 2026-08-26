@@ -25,6 +25,11 @@ velxiogw 0.1.0 — Velxio IoT Network Gateway
 
 Then paste the pairing code into the WiFi panel in the Velxio editor.
 
+> Connecting the gateway to the simulator is a **paid Velxio feature**
+> (Maker plan and up). The binary is a free download and the source is
+> public, but the "Connect to my local network" flow in the editor is
+> gated by your plan — the same split Wokwi uses for its Private Gateway.
+
 From your sketch, `host.velxio.internal` always names the machine the
 gateway runs on:
 

@@ -1,6 +1,20 @@
 Copyright (c) 2026 Velxio (David Montero Crespo). All rights reserved.
 
-Proprietary software. The compiled gateway binaries published under
-Releases may be downloaded and used free of charge to connect Velxio
-simulations to your own network. The source code may not be copied,
-modified, or redistributed without written permission.
+Source-available, proprietary software.
+
+You MAY:
+  - download and run the compiled gateway binaries published under
+    Releases, free of charge;
+  - read the source code.
+
+You MAY NOT:
+  - copy, modify, or redistribute the source code or derived works
+    without written permission;
+  - use the source code to build a competing product or service.
+
+Connecting the gateway to the Velxio simulator ("Connect to my local
+network" in the WiFi panel) is a feature of paid Velxio plans; the plan
+entitlement is enforced by the Velxio application, not by this program.
+Running the binary by itself grants no plan entitlement.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
