@@ -1,9 +1,5 @@
 name: velxiogw release
 
-# NOTE: this file lives in ci/ because the automation PAT that pushed the
-# repo lacks the `workflow` scope. To arm CI, move it to
-# .github/workflows/release.yml (web UI "Add file" works, or any push with
-# a workflow-scoped token) -- nothing else changes.
 
 # Tag push v* → build one binary per platform, zip it wokwigw-style
 # (velxiogw_v1.2.3_Linux_64bit.zip ...), attach everything to a GitHub
@@ -35,13 +31,17 @@ jobs:
             label: Linux_64bit
           - os: ubuntu-22.04-arm
             label: Linux_ARM64
-          - os: macos-13
+            # Free arm64 hosted runners are public-repo only; on the private
+            # repo this job may sit queued/fail — the release must not.
+            best-effort: true
+          - os: macos-15-intel
             label: macOS_64bit
           - os: macos-14
             label: macOS_ARM64
           - os: windows-2022
             label: Windows_64bit
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.best-effort || false }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -82,7 +82,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" out/*.zip \
+          gh release create "$GITHUB_REF_NAME" \
             --repo "$GITHUB_REPOSITORY" \
             --title "$GITHUB_REF_NAME" \
-            --generate-notes
+            --generate-notes || true   # already exists on a re-run / pre-created release
+          gh release upload "$GITHUB_REF_NAME" out/*.zip \
+            --repo "$GITHUB_REPOSITORY" --clobber

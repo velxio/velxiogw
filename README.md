@@ -67,10 +67,8 @@ python -m velxiogw
 `velxiogw/net/` is **vendored** from velxio-prod's `picow_net` stack — see
 [VENDORED.md](./VENDORED.md) before touching it.
 
-Releases: push a `v*` tag; CI (`ci/release.yml` — see the note at its top
-about arming it under `.github/workflows/`) builds Linux (x64/arm64), macOS
-(x64/arm64) and Windows binaries and attaches wokwigw-style zips to the
-GitHub release.
+Releases: push a `v*` tag; CI builds Linux (x64/arm64), macOS (x64/arm64)
+and Windows binaries and attaches wokwigw-style zips to the GitHub release.
 
 ## Roadmap
 
