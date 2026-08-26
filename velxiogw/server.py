@@ -79,6 +79,13 @@ class GatewayServer:
             }).encode()
             resp = connection.respond(http.HTTPStatus.OK, '')
             resp.body = body
+            # websockets' Headers is a multidict: plain assignment APPENDS,
+            # and respond() already set Content-Type/-Length for its empty
+            # text. A second Content-Length is an RFC 9110 hard error that
+            # Chrome enforces (net::ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_
+            # LENGTH) while curl shrugs — delete before setting.
+            del resp.headers['Content-Type']
+            del resp.headers['Content-Length']
             resp.headers['Content-Type'] = 'application/json'
             resp.headers['Content-Length'] = str(len(body))
             resp.headers['Access-Control-Allow-Origin'] = '*'

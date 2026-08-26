@@ -1,6 +1,6 @@
 [project]
 name = "velxiogw"
-version = "0.1.0"
+version = "0.1.1"
 description = "Velxio IoT Network Gateway - connect your simulated boards to your local network"
 requires-python = ">=3.11"
 dependencies = ["websockets>=13,<18"]

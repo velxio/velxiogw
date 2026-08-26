@@ -47,6 +47,14 @@ http.begin("http://host.velxio.internal:8000/api");
 | `--public-only` | hosted-gateway policy: refuse LAN/loopback targets |
 | `-v` | debug logging |
 
+## Browser permission (Chrome)
+
+Recent Chrome versions gate pages talking to `127.0.0.1` behind a **Local
+Network Access** permission — the first time the Velxio panel probes for the
+gateway, Chrome asks. Click **Allow**; deny and the panel simply reports "no
+gateway running". Safari does not currently allow this at all (the same
+limitation Wokwi's gateway documents).
+
 ## Security model
 
 - Binds to **loopback only** — nothing on your LAN can reach the gateway.

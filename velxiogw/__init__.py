@@ -6,4 +6,4 @@ to velxio.dev, and the vendored userspace NAT (``velxiogw.net``) opens
 real sockets on this host — LAN, loopback and internet alike.
 """
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
