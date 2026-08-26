@@ -1,0 +1,88 @@
+name: velxiogw release
+
+# NOTE: this file lives in ci/ because the automation PAT that pushed the
+# repo lacks the `workflow` scope. To arm CI, move it to
+# .github/workflows/release.yml (web UI "Add file" works, or any push with
+# a workflow-scoped token) -- nothing else changes.
+
+# Tag push v* → build one binary per platform, zip it wokwigw-style
+# (velxiogw_v1.2.3_Linux_64bit.zip ...), attach everything to a GitHub
+# release. Mirrors the naming of wokwi/wokwigw so the download story is
+# familiar; mirrors velxio-prod's desktop-release.yml split where it
+# matters (macOS on CI runners; everything is CI here because these
+# builds need no bundled toolchains).
+#
+# Signing (Windows SmartScreen / macOS notarization) is NOT wired yet —
+# tracked in README "Roadmap". The desktop app's minisign + ECDSA
+# manifest pipeline (velxio-prod pro/desktop/RELEASING.md) is the model
+# to reuse when it lands.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            label: Linux_64bit
+          - os: ubuntu-22.04-arm
+            label: Linux_ARM64
+          - os: macos-13
+            label: macOS_64bit
+          - os: macos-14
+            label: macOS_ARM64
+          - os: windows-2022
+            label: Windows_64bit
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install
+        run: pip install . pyinstaller pytest pytest-asyncio
+      - name: Test
+        run: pytest -q
+      - name: Freeze
+        run: pyinstaller --clean -y velxiogw.spec
+      - name: Package
+        shell: bash
+        run: |
+          VER="${GITHUB_REF_NAME:-dev}"
+          NAME="velxiogw_${VER}_${{ matrix.label }}"
+          mkdir -p out
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            7z a "out/${NAME}.zip" ./dist/velxiogw.exe
+          else
+            (cd dist && zip -9 "../out/${NAME}.zip" velxiogw)
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.label }}
+          path: out/*.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-22.04
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: out
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" out/*.zip \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes

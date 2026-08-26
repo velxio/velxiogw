@@ -1,0 +1,20 @@
+[project]
+name = "velxiogw"
+version = "0.1.0"
+description = "Velxio IoT Network Gateway - connect your simulated boards to your local network"
+requires-python = ">=3.11"
+dependencies = ["websockets>=13,<18"]
+
+[project.scripts]
+velxiogw = "velxiogw.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["velxiogw*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
