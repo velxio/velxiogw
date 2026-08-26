@@ -12,12 +12,15 @@ DST = Path(sys.argv[1] if len(sys.argv) > 1 else 'velxiogw/net')
 CONSTS_APPEND = '''
 
 # ── velxiogw vendor patch (see VENDORED.md) ──────────────────────────
-# The IP the DNS proxy answers for `host.velxio.internal`. The chip cannot
-# be handed 127.0.0.1 (lwIP would route it to its own loopback), so it gets
-# an address on the virtual subnet and the NATs rewrite it to the host's
-# loopback when opening the real socket.
+# The IP the DNS proxy answers for `host.velxio.internal`. Two constraints:
+# not 127.0.0.1 (lwIP routes that to the chip's own loopback), and not an
+# address INSIDE the virtual subnet -- the chip would ARP for it as on-link
+# and the browser-side net layer owns ARP, so the SYN never reaches the
+# tunnel (found by the first staging e2e). TEST-NET-1 is reserved, never a
+# real LAN, and off-subnet, so lwIP routes it via the gateway; the NATs
+# rewrite it to the host's loopback when opening the real socket.
 HOST_ALIAS_HOSTNAME = 'host.velxio.internal'
-HOST_ALIAS_IP = '10.13.37.254'
+HOST_ALIAS_IP = '192.0.2.1'
 '''
 
 DNS_ANCHOR = """        # A-record query. Resolve via host.
